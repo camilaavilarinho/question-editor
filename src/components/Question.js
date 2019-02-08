@@ -96,16 +96,16 @@ const styles = theme => ({
 const prevState = {
   title: "Title of the Question",
   rows: [
-    { id: 1, text: "row1", image: "", imgPreview: "", radioOption: "" },
-    { id: 2, text: "row2", image: "", imgPreview: "", radioOption: "" },
-    { id: 3, text: "row3", image: "", imgPreview: "", radioOption: "" },
-    { id: 4, text: "row4", image: "", imgPreview: "", radioOption: "" }
+    { id: 1, text: "row1", image: "", radioOption: "" },
+    { id: 2, text: "row2", image: "", radioOption: "" },
+    { id: 3, text: "row3", image: "", radioOption: "" },
+    { id: 4, text: "row4", image: "", radioOption: "" }
   ],
   columns: [
-    { id: 1, text: "col1", image: "", imgPreview: "" },
-    { id: 2, text: "col2", image: "", imgPreview: "" },
-    { id: 3, text: "col3", image: "", imgPreview: "" },
-    { id: 4, text: "col4", image: "", imgPreview: "" }
+    { id: 1, text: "col1", image: "" },
+    { id: 2, text: "col2", image: "" },
+    { id: 3, text: "col3", image: "" },
+    { id: 4, text: "col4", image: "" }
   ]
 };
 
@@ -121,69 +121,54 @@ class Question extends React.Component {
     });
   };
   /* Edit Label */
-  handleChangeRow = id => e => {
-    console.log("row ID: ", id);
-    let newState = [...this.state.rows];
+  handleChangeLabel = (id, name) => e => {
+    let newState = [...this.state[name]];
     newState[id - 1].text = e.target.value;
     this.setState({
-      rows: newState
-    });
-  };
-  handleChangeCol = id => e => {
-    let newState = [...this.state.columns];
-    newState[id - 1].text = e.target.value;
-    this.setState({
-      columns: newState
+      [name]: newState
     });
   };
   /* Add and remove rows and columns */
-  addNewRow = (id, e) => {
+  addNewRowCol = (id, name, e) => {
     e.preventDefault();
     let newId = id + 1;
-    let newRow = {
-      id: newId,
-      text: `row${newId}`,
-      image: "",
-      imgPreview: "",
-      radioOption: ""
-    };
-    let newState = [...this.state.rows];
-    newState.push(newRow);
+    var newRowCol = null;
+    if (name === "rows") {
+      newRowCol = {
+        id: newId,
+        text: `row${newId}`,
+        image: "",
+        radioOption: ""
+      };
+    } else {
+      newRowCol = {
+        id: newId,
+        text: `col${newId}`,
+        image: ""
+      };
+    }
+    let newState = [...this.state[name]];
+    newState.push(newRowCol);
     this.setState({
-      rows: newState
+      [name]: newState
     });
   };
-  removeRow = e => {
+  removeRowCol = (name, e) => {
     e.preventDefault();
-    let newState = [...this.state.rows];
+    let newState = [...this.state[name]];
     newState.pop();
     this.setState({
-      rows: newState
+      [name]: newState
     });
   };
-  addNewCol = (id, e) => {
-    e.preventDefault();
-    let newId = id + 1;
-    let newCol = {
-      id: newId,
-      text: `col${newId}`,
-      image: "",
-      imgPreview: ""
-    };
-    let newState = [...this.state.columns];
-    newState.push(newCol);
-    this.setState({
-      columns: newState
-    });
-  };
-  removeCol = e => {
+  /* removeCol = e => {
     e.preventDefault();
     let newState = [...this.state.columns];
     newState.pop();
     this.setState({
       columns: newState
     });
-  };
+  }; */
   /* Handle Click Radio Butoon */
   handleRadioClick = (clickedRow, e) => {
     let newState = [...this.state.rows];
@@ -213,13 +198,14 @@ class Question extends React.Component {
       .then(res => console.log(res.data));
 
     this.setState({
-      prevState
+      title: prevState.title,
+      rows: prevState.rows,
+      columns: prevState.columns
     });
   };
 
   /* Handle image change */
   handleImageChange = (row, e) => {
-    console.log(row);
     e.preventDefault();
 
     let reader = new FileReader();
@@ -228,9 +214,7 @@ class Question extends React.Component {
     let newState = [...this.state.rows];
 
     reader.onloadend = () => {
-      newState[row.id - 1].image = file;
-      newState[row.id - 1].imgPreview = reader.result;
-      console.log("newState: ", newState);
+      newState[row.id - 1].image = reader.result;
       this.setState({
         rows: newState
       });
@@ -243,9 +227,7 @@ class Question extends React.Component {
 
     const imageLoad = row => {
       if (row.image !== "") {
-        return (
-          <img className={classes.image} alt="option" src={row.imgPreview} />
-        );
+        return <img className={classes.image} alt="option" src={row.image} />;
       } else {
         return (
           <label htmlFor={`input-file${row.id}`}>
@@ -287,7 +269,7 @@ class Question extends React.Component {
                     <InputBase
                       className={classes.inputBase}
                       value={col.text}
-                      onChange={this.handleChangeCol(col.id)}
+                      onChange={this.handleChangeLabel(col.id, "columns")}
                     />
                   </TableCell>
                 ))}
@@ -297,7 +279,9 @@ class Question extends React.Component {
                     color="default"
                     size="small"
                     className={classes.fab}
-                    onClick={e => this.addNewCol(this.state.columns.length, e)}
+                    onClick={e =>
+                      this.addNewRowCol(this.state.columns.length, "columns", e)
+                    }
                   >
                     <AddIcon />
                   </Fab>
@@ -306,7 +290,7 @@ class Question extends React.Component {
                     color="secondary"
                     size="small"
                     className={classes.remove}
-                    onClick={e => this.removeCol(e)}
+                    onClick={e => this.removeRowCol("columns", e)}
                   >
                     <RemoveIcon />
                   </Fab>
@@ -321,13 +305,11 @@ class Question extends React.Component {
                     scope="row"
                     className={classes.labelContainer}
                   >
-                    <div className={classes.imageUpload}>
-                      {imageLoad(row)}
-                    </div>
+                    <div className={classes.imageUpload}>{imageLoad(row)}</div>
                     <InputBase
                       className={classes.inputBase}
                       value={row.text}
-                      onChange={this.handleChangeRow(row.id)}
+                      onChange={this.handleChangeLabel(row.id, "rows")}
                     />
                   </TableCell>
                   {this.state.columns.map(col => (
@@ -350,7 +332,9 @@ class Question extends React.Component {
                     color="default"
                     size="small"
                     className={classes.fab}
-                    onClick={e => this.addNewRow(this.state.rows.length, e)}
+                    onClick={e =>
+                      this.addNewRowCol(this.state.rows.length, "rows", e)
+                    }
                   >
                     <AddIcon />
                   </Fab>
@@ -359,7 +343,7 @@ class Question extends React.Component {
                     color="secondary"
                     size="small"
                     className={classes.remove}
-                    onClick={e => this.removeRow(e)}
+                    onClick={e => this.removeRowCol("rows", e)}
                   >
                     <RemoveIcon />
                   </Fab>
