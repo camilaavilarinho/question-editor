@@ -29,15 +29,17 @@ questionRoutes.route('/').get(function (req, res) {
     });
 });
 
-questionRoutes.route('/save').post(function(req, res){
+questionRoutes.route('/save').post(function (req, res) {
     let question = new Question(req.body);
     question.save()
-    .then(question => {
-        res.status(200).json({'question:': 'question saved successfully'});
-    })
-    .catch(err =>{
-        res.status(400).send('saving new question failed');
-    });
+        .then(question => {
+            res.status(200).json({
+                'question:': 'question saved successfully'
+            });
+        })
+        .catch(err => {
+            res.status(400).send('saving new question failed');
+        });
 });
 
 
