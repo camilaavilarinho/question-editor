@@ -88,6 +88,11 @@ const styles = theme => ({
     width: 50,
     float: "left"
   },
+  imageUploadCol: {
+    width: 50,
+    display: "block",
+    textAlign: "left"
+  },
   image: {
     width: 40
   }
@@ -205,18 +210,18 @@ class Question extends React.Component {
   };
 
   /* Handle image change */
-  handleImageChange = (row, e) => {
+  handleImageChange = (id, name, e) => {
     e.preventDefault();
 
     let reader = new FileReader();
     let file = e.target.files[0];
 
-    let newState = [...this.state.rows];
+    let newState = [...this.state[name]];
 
     reader.onloadend = () => {
-      newState[row.id - 1].image = reader.result;
+      newState[id - 1].image = reader.result;
       this.setState({
-        rows: newState
+        [name]: newState
       });
     };
     reader.readAsDataURL(file);
@@ -225,18 +230,18 @@ class Question extends React.Component {
   render() {
     const { classes } = this.props;
 
-    const imageLoad = row => {
-      if (row.image !== "") {
-        return <img className={classes.image} alt="option" src={row.image} />;
+    const imageLoad = (obj, name) => {
+      if (obj.image !== "") {
+        return <img className={classes.image} alt="option" src={obj.image} />;
       } else {
         return (
-          <label htmlFor={`input-file${row.id}`}>
+          <label htmlFor={`input-file${name}${obj.id}`}>
             <AddIcon className={classes.fileInputIcon} />
             <input
-              id={`input-file${row.id}`}
+              id={`input-file${name}${obj.id}`}
               className={classes.fileInput}
               type="file"
-              onChange={e => this.handleImageChange(row, e)}
+              onChange={e => this.handleImageChange(obj.id, name, e)}
             />
           </label>
         );
@@ -266,6 +271,9 @@ class Question extends React.Component {
                     align="right"
                     className={classes.tableCell}
                   >
+                    <div className={classes.imageUploadCol}>
+                      {imageLoad(col, "columns")}
+                    </div>
                     <InputBase
                       className={classes.inputBase}
                       value={col.text}
@@ -305,7 +313,9 @@ class Question extends React.Component {
                     scope="row"
                     className={classes.labelContainer}
                   >
-                    <div className={classes.imageUpload}>{imageLoad(row)}</div>
+                    <div className={classes.imageUpload}>
+                      {imageLoad(row, "rows")}
+                    </div>
                     <InputBase
                       className={classes.inputBase}
                       value={row.text}
