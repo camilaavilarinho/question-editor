@@ -8,7 +8,8 @@ let Question = require('./question.model');
 const PORT = 4000;
 
 app.use(cors());
-app.use(bodyParser.json());
+/* extend the payload size to match the mongodb file upload size limit(16MB) */
+app.use(bodyParser.json({limit: '16mb', extended: true}));
 
 mongoose.connect('mongodb://127.0.0.1:27017/questions', {
     useNewUrlParser: true

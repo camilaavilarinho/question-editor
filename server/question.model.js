@@ -12,7 +12,7 @@ let Question = new Schema({
     columns: [{
         id: Number,
         text: String,
-        image: String,
+        image: String
     }],
 
 });
