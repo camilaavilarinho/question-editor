@@ -12,6 +12,7 @@ import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
 import Button from "@material-ui/core/Button";
+import axios from "axios";
 
 const styles = theme => ({
   root: {
@@ -34,6 +35,9 @@ const styles = theme => ({
   tableRow: {
     maxWidth: 130
   },
+  tableCell: {
+    borderBottom: "none"
+  },
   scroll: {
     display: "block",
     overflowX: "scroll",
@@ -46,7 +50,8 @@ const styles = theme => ({
   },
   buttons: {
     width: 300,
-    padding: 0
+    padding: 0,
+    borderBottom: "none"
   },
   fab: {
     color: "#fff",
@@ -66,58 +71,80 @@ const styles = theme => ({
   button: {
     color: "#fff",
     backgroundColor: "#1dd1a1"
+  },
+  fileInput: {
+    display: "none"
+  },
+  fileInputIcon: {
+    backgroundColor: "#dfe6e9",
+    padding: 5
+  },
+  labelContainer: {
+    position: "absolute",
+    borderBottom: "none",
+    padding: 5
+  },
+  imageUpload: {
+    width: 50,
+    float: "left"
+  },
+  image: {
+    width: 40
   }
 });
 
+const prevState = {
+  title: "Title of the Question",
+  rows: [
+    { id: 1, text: "row1", image: "", imgPreview: "", radioOption: "" },
+    { id: 2, text: "row2", image: "", imgPreview: "", radioOption: "" },
+    { id: 3, text: "row3", image: "", imgPreview: "", radioOption: "" },
+    { id: 4, text: "row4", image: "", imgPreview: "", radioOption: "" }
+  ],
+  columns: [
+    { id: 1, text: "col1", image: "", imgPreview: "" },
+    { id: 2, text: "col2", image: "", imgPreview: "" },
+    { id: 3, text: "col3", image: "", imgPreview: "" },
+    { id: 4, text: "col4", image: "", imgPreview: "" }
+  ]
+};
+
 class Question extends React.Component {
-  state = {
-    title: "Title of the Question",
-    rows: [
-      { id: 1, text: "row1", image: "", radioOption: "" },
-      { id: 2, text: "row2", image: "", radioOption: "" },
-      { id: 3, text: "row3", image: "", radioOption: "" },
-      { id: 4, text: "row4", image: "", radioOption: "" }
-    ],
-    columns: [
-      { id: 1, text: "col1", image: "" },
-      { id: 2, text: "col2", image: "" },
-      { id: 3, text: "col3", image: "" },
-      { id: 4, text: "col4", image: "" }
-    ]
-  };
+  state = prevState;
+
   componentDidMount() {
-    /* this.props.callback(this.state); */
     this.handleStateData();
-    /* console.log("question State: ", this.state); */
   }
-  handleChange = name => event => {
+  handleChange = name => e => {
     this.setState({
-      [name]: event.target.value
+      [name]: e.target.value
     });
   };
   /* Edit Label */
-  handleChangeRow = id => event => {
+  handleChangeRow = id => e => {
+    console.log("row ID: ", id);
     let newState = [...this.state.rows];
-    newState[id - 1].text = event.target.value;
+    newState[id - 1].text = e.target.value;
     this.setState({
       rows: newState
     });
   };
-  handleChangeCol = id => event => {
+  handleChangeCol = id => e => {
     let newState = [...this.state.columns];
-    newState[id - 1].text = event.target.value;
+    newState[id - 1].text = e.target.value;
     this.setState({
       columns: newState
     });
   };
   /* Add and remove rows and columns */
-  addNewRow = (id, event) => {
-    event.preventDefault();
+  addNewRow = (id, e) => {
+    e.preventDefault();
     let newId = id + 1;
     let newRow = {
       id: newId,
       text: `row${newId}`,
       image: "",
+      imgPreview: "",
       radioOption: ""
     };
     let newState = [...this.state.rows];
@@ -126,21 +153,22 @@ class Question extends React.Component {
       rows: newState
     });
   };
-  removeRow = event => {
-    event.preventDefault();
+  removeRow = e => {
+    e.preventDefault();
     let newState = [...this.state.rows];
     newState.pop();
     this.setState({
       rows: newState
     });
   };
-  addNewCol = (id, event) => {
-    event.preventDefault();
+  addNewCol = (id, e) => {
+    e.preventDefault();
     let newId = id + 1;
     let newCol = {
       id: newId,
       text: `col${newId}`,
-      image: ""
+      image: "",
+      imgPreview: ""
     };
     let newState = [...this.state.columns];
     newState.push(newCol);
@@ -148,8 +176,8 @@ class Question extends React.Component {
       columns: newState
     });
   };
-  removeCol = event => {
-    event.preventDefault();
+  removeCol = e => {
+    e.preventDefault();
     let newState = [...this.state.columns];
     newState.pop();
     this.setState({
@@ -157,38 +185,105 @@ class Question extends React.Component {
     });
   };
   /* Handle Click Radio Butoon */
-  handleRadioClick = (clickedRow, event) => {
+  handleRadioClick = (clickedRow, e) => {
     let newState = [...this.state.rows];
-    newState[clickedRow.id - 1].radioOption = event.target.value;
+    newState[clickedRow.id - 1].radioOption = e.target.value;
     this.setState({
       rows: newState
     });
   };
 
+  /* Lift up the state */
   handleStateData = () => {
     this.props.callback(this.state);
+  };
+
+  /* Save in the database */
+  handleSubmit = e => {
+    e.preventDefault();
+
+    const newQuestion = {
+      title: this.state.title,
+      rows: this.state.rows,
+      columns: this.state.columns
+    };
+
+    axios
+      .post("http://localhost:4000/questions/save", newQuestion)
+      .then(res => console.log(res.data));
+
+    this.setState({
+      prevState
+    });
+  };
+
+  /* Handle image change */
+  handleImageChange = (row, e) => {
+    console.log(row);
+    e.preventDefault();
+
+    let reader = new FileReader();
+    let file = e.target.files[0];
+
+    let newState = [...this.state.rows];
+
+    reader.onloadend = () => {
+      newState[row.id - 1].image = file;
+      newState[row.id - 1].imgPreview = reader.result;
+      console.log("newState: ", newState);
+      this.setState({
+        rows: newState
+      });
+    };
+    reader.readAsDataURL(file);
   };
 
   render() {
     const { classes } = this.props;
 
+    const imageLoad = row => {
+      if (row.image !== "") {
+        return (
+          <img className={classes.image} alt="option" src={row.imgPreview} />
+        );
+      } else {
+        return (
+          <label htmlFor={`input-file${row.id}`}>
+            <AddIcon className={classes.fileInputIcon} />
+            <input
+              id={`input-file${row.id}`}
+              className={classes.fileInput}
+              type="file"
+              onChange={e => this.handleImageChange(row, e)}
+            />
+          </label>
+        );
+      }
+    };
+
     return (
-      <div>
+      <form onSubmit={this.handleSubmit}>
         <h2>Question Editor View</h2>
-        <form className={classes.container} noValidate autoComplete="off">
+        <div className={classes.container} noValidate autoComplete="off">
           <InputBase
             className={classes.inputBase}
             value={this.state.title}
             onChange={this.handleChange("title")}
           />
-        </form>
+        </div>
         <Paper className={classes.root}>
           <Table className={classes.table}>
             <TableHead>
               <TableRow>
-                <TableCell align="right"> </TableCell>
+                <TableCell align="right" className={classes.tableCell}>
+                  {" "}
+                </TableCell>
                 {this.state.columns.map(col => (
-                  <TableCell key={col.id} align="right">
+                  <TableCell
+                    key={col.id}
+                    align="right"
+                    className={classes.tableCell}
+                  >
                     <InputBase
                       className={classes.inputBase}
                       value={col.text}
@@ -221,7 +316,14 @@ class Question extends React.Component {
             <TableBody>
               {this.state.rows.map((row, index) => (
                 <TableRow key={index} className={classes.tableRow}>
-                  <TableCell component="th" scope="row">
+                  <TableCell
+                    component="th"
+                    scope="row"
+                    className={classes.labelContainer}
+                  >
+                    <div className={classes.imageUpload}>
+                      {imageLoad(row)}
+                    </div>
                     <InputBase
                       className={classes.inputBase}
                       value={row.text}
@@ -229,7 +331,7 @@ class Question extends React.Component {
                     />
                   </TableCell>
                   {this.state.columns.map(col => (
-                    <TableCell key={col.id}>
+                    <TableCell key={col.id} className={classes.tableCell}>
                       <input
                         id={col.id}
                         type="radio"
@@ -266,10 +368,14 @@ class Question extends React.Component {
             </TableBody>
           </Table>
         </Paper>
-        <Button className={classes.button} onClick={this.handleStateData}>
+        <Button
+          type="submit"
+          className={classes.button}
+          onClick={this.handleStateData}
+        >
           Save
         </Button>
-      </div>
+      </form>
     );
   }
 }

@@ -7,7 +7,7 @@ const styles = theme => ({
   header: {
     margin: theme.spacing.unit * 6,
     marginLeft: theme.spacing.unit * 10,
-    textAlign: "left",
+    textAlign: "left"
   },
   stats: {
     margin: theme.spacing.unit * 10,
@@ -29,6 +29,16 @@ class Summary extends React.Component {
     return max;
   };
 
+  getNumberOfImages = obj =>{
+      let count = 0;
+      if(obj !== undefined){
+          obj.map(val =>{
+              if(val.image !== "") count ++;
+          })
+      }
+      return count
+  }
+
   render() {
     const { classes } = this.props;
 
@@ -46,7 +56,7 @@ class Summary extends React.Component {
           <p>
             Number of columns: {columns !== undefined ? columns.length : null}
           </p>
-          <p>Number of images uploaded: </p>
+          <p>Number of images uploaded: {this.getNumberOfImages(rows)}</p>
           <p>Longest row label: {this.getLongestLabel(rows)}</p>
           <p>Longest column label: {this.getLongestLabel(columns)}</p>
         </Paper>
