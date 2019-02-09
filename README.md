@@ -45,16 +45,16 @@ Before run the backend is necessary to have mongoDB installed. If you don't have
 
     Create the MongoDB database instance by executing this commands in a different terminal tab:
 
-    1. open mongodb client:
+    1. open mongodb client:          
        `mongo`
 
-    2. create a new database:
+    2. create a new database:        
         `use questions`
 
 2. Back to question-editor
 
-   `cd question-editor`
-   `cd server`
+   `cd question-editor`     
+   `cd server`      
 
 3. **Install Dependencies**
 
