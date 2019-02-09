@@ -21,23 +21,26 @@ class Summary extends React.Component {
   getLongestLabel = obj => {
     let max = 0;
     if (obj !== undefined) {
-      obj.map(val => {
-        let labelSize = val.text.length;
+      for(var val in obj){
+        let labelSize = obj[val].text.length;
         if (labelSize >= max) max = labelSize;
-      });
+      }
     }
     return max;
   };
 
-  getNumberOfImages = obj =>{
-      let count = 0;
-      if(obj !== undefined){
-          obj.map(val =>{
-              if(val.image !== "") count ++;
-          })
+  getNumberOfImages = (rows, columns) => {
+    let count = 0;
+    if (rows !== undefined) {
+      for (var rKey in rows) {
+        if (rows[rKey].image !== "") count++;
       }
-      return count
-  }
+      for (var cKey in columns) {
+        if (columns[cKey].image !== "") count++;
+      }
+    }
+    return count;
+  };
 
   render() {
     const { classes } = this.props;
@@ -49,17 +52,17 @@ class Summary extends React.Component {
 
     return (
       <div>
-        <h2>Question Summary View</h2>
-        <h3 className={classes.header}>Summary:</h3>
+        <h2> Question Summary View </h2>{" "}
+        <h3 className={classes.header}> Summary: </h3>{" "}
         <Paper className={classes.stats}>
-          <p>Number of rows: {rows !== undefined ? rows.length : null}</p>
+          <p> Number of rows: {rows !== undefined ? rows.length : null} </p>{" "}
           <p>
-            Number of columns: {columns !== undefined ? columns.length : null}
-          </p>
-          <p>Number of images uploaded: {this.getNumberOfImages(rows)}</p>
-          <p>Longest row label: {this.getLongestLabel(rows)}</p>
-          <p>Longest column label: {this.getLongestLabel(columns)}</p>
-        </Paper>
+            Number of columns: {columns !== undefined ? columns.length : null}{" "}
+          </p>{" "}
+          <p> Number of images uploaded: {this.getNumberOfImages(rows, columns)} </p>{" "}
+          <p> Longest row label: {this.getLongestLabel(rows)} </p>{" "}
+          <p> Longest column label: {this.getLongestLabel(columns)} </p>{" "}
+        </Paper>{" "}
       </div>
     );
   }
