@@ -22,10 +22,10 @@ const styles = theme => ({
     overflowX: "auto",
     maxWidth: 700
   },
-  headerInput:{
+  headerInput: {
     width: 150,
     textAlign: "right",
-    fontStyle: "italic",
+    fontStyle: "italic"
   },
   container: {
     display: "flex",
@@ -80,7 +80,8 @@ const styles = theme => ({
     margin: 10
   },
   newButton: {
-    backgroundColor: "#dfe6e9"
+    backgroundColor: "#dfe6e9",
+    marginTop: 15
   },
   fileInput: {
     display: "none"
@@ -207,19 +208,19 @@ class Question extends React.Component {
 
   handleResetData = () => {
     this.setState({
-        title: "Title of the Question",
-        rows: [
-          { id: 1, text: "row1", image: "", radioOption: "", checked: true },
-          { id: 2, text: "row2", image: "", radioOption: "", checked: true },
-          { id: 3, text: "row3", image: "", radioOption: "", checked: true },
-          { id: 4, text: "row4", image: "", radioOption: "", checked: true }
-        ],
-        columns: [
-          { id: 1, text: "col1", image: "", checked: true },
-          { id: 2, text: "col2", image: "", checked: true },
-          { id: 3, text: "col3", image: "", checked: true },
-          { id: 4, text: "col4", image: "", checked: true }
-        ]
+      title: "Title of the Question",
+      rows: [
+        { id: 1, text: "row1", image: "", radioOption: "", checked: true },
+        { id: 2, text: "row2", image: "", radioOption: "", checked: true },
+        { id: 3, text: "row3", image: "", radioOption: "", checked: true },
+        { id: 4, text: "row4", image: "", radioOption: "", checked: true }
+      ],
+      columns: [
+        { id: 1, text: "col1", image: "", checked: true },
+        { id: 2, text: "col2", image: "", checked: true },
+        { id: 3, text: "col3", image: "", checked: true },
+        { id: 4, text: "col4", image: "", checked: true }
+      ]
     });
   };
 
@@ -263,142 +264,148 @@ class Question extends React.Component {
     };
 
     return (
-      <form onSubmit={this.handleSubmit}>
-        <h2>Question Editor View</h2>
-        <div className={classes.container} noValidate autoComplete="off">
-          <InputBase
-            className={classes.headerInput}
-            value={this.state.title}
-            onChange={this.handleChange("title")}
-          />
-        </div>
-        <Paper className={classes.root}>
-          <Table className={classes.table}>
-            <TableHead>
-              <TableRow>
-                <TableCell align="right" className={classes.tableCell}>
-                  {" "}
-                </TableCell>
-                {this.state.columns.map(col => (
-                  <Grow
-                    key={col.id}
-                    in={col.checked}
-                    style={{ transformOrigin: "0 0 0" }}
-                    {...(col.checked ? { timeout: 1000 } : {})}
-                  >
-                    <TableCell align="right" className={classes.tableCell}>
-                      <div className={classes.imageUploadCol}>
-                        {imageLoad(col, "columns")}
-                      </div>
-                      <InputBase
-                        className={classes.inputBase}
-                        value={col.text}
-                        onChange={this.handleChangeLabel(col.id, "columns")}
-                      />
-                    </TableCell>
-                  </Grow>
-                ))}
-                <TableCell className={classes.buttons}>
-                  <Fab
-                    aria-label="Add"
-                    color="default"
-                    size="small"
-                    className={classes.fab}
-                    onClick={e =>
-                      this.addNewRowCol(this.state.columns.length, "columns", e)
-                    }
-                  >
-                    <AddIcon />
-                  </Fab>
-                  <Fab
-                    aria-label="Add"
-                    color="secondary"
-                    size="small"
-                    className={classes.remove}
-                    onClick={e => this.removeRowCol("columns", e)}
-                  >
-                    <RemoveIcon />
-                  </Fab>
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {this.state.rows.map((row, index) => (
-                <TableRow key={index} className={classes.tableRow}>
-                  <Grow
-                    in={row.checked}
-                    style={{ transformOrigin: "0 0 0" }}
-                    {...(row.checked ? { timeout: 1000 } : {})}
-                  >
-                    <TableCell
-                      component="th"
-                      scope="row"
-                      className={classes.labelContainer}
-                    >
-                      <div className={classes.imageUpload}>
-                        {imageLoad(row, "rows")}
-                      </div>
-                      <InputBase
-                        className={classes.inputBase}
-                        value={row.text}
-                        onChange={this.handleChangeLabel(row.id, "rows")}
-                      />
-                    </TableCell>
-                  </Grow>
+      <div>
+        <form onSubmit={this.handleSubmit}>
+          <h2>Question Editor View</h2>
+          <div className={classes.container} noValidate autoComplete="off">
+            <InputBase
+              className={classes.headerInput}
+              value={this.state.title}
+              onChange={this.handleChange("title")}
+            />
+          </div>
+          <Paper className={classes.root}>
+            <Table className={classes.table}>
+              <TableHead>
+                <TableRow>
+                  <TableCell align="right" className={classes.tableCell}>
+                    {" "}
+                  </TableCell>
                   {this.state.columns.map(col => (
                     <Grow
                       key={col.id}
-                      in={row.checked}
+                      in={col.checked}
                       style={{ transformOrigin: "0 0 0" }}
-                      {...(row.checked ? { timeout: 1000 } : {})}
+                      {...(col.checked ? { timeout: 1000 } : {})}
                     >
-                      <TableCell className={classes.tableCell}>
-                        <input
-                          id={col.id}
-                          type="radio"
-                          name={row.id}
+                      <TableCell align="right" className={classes.tableCell}>
+                        <div className={classes.imageUploadCol}>
+                          {imageLoad(col, "columns")}
+                        </div>
+                        <InputBase
+                          className={classes.inputBase}
                           value={col.text}
-                          onChange={e => this.handleRadioClick(row, e)}
+                          onChange={this.handleChangeLabel(col.id, "columns")}
                         />
                       </TableCell>
                     </Grow>
                   ))}
+                  <TableCell className={classes.buttons}>
+                    <Fab
+                      aria-label="Add"
+                      color="default"
+                      size="small"
+                      className={classes.fab}
+                      onClick={e =>
+                        this.addNewRowCol(
+                          this.state.columns.length,
+                          "columns",
+                          e
+                        )
+                      }
+                    >
+                      <AddIcon />
+                    </Fab>
+                    <Fab
+                      aria-label="Add"
+                      color="secondary"
+                      size="small"
+                      className={classes.remove}
+                      onClick={e => this.removeRowCol("columns", e)}
+                    >
+                      <RemoveIcon />
+                    </Fab>
+                  </TableCell>
                 </TableRow>
-              ))}
-              <TableRow>
-                <TableCell>
-                  <Fab
-                    aria-label="Add"
-                    color="default"
-                    size="small"
-                    className={classes.fab}
-                    onClick={e =>
-                      this.addNewRowCol(this.state.rows.length, "rows", e)
-                    }
-                  >
-                    <AddIcon />
-                  </Fab>
-                  <Fab
-                    aria-label="Add"
-                    color="secondary"
-                    size="small"
-                    className={classes.remove}
-                    onClick={e => this.removeRowCol("rows", e)}
-                  >
-                    <RemoveIcon />
-                  </Fab>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </Paper>
-        <Button
-          type="submit"
-          className={classes.button}
-          onClick={this.handleStateData}
-        >
-          Save
-        </Button>
+              </TableHead>
+              <TableBody>
+                {this.state.rows.map((row, index) => (
+                  <TableRow key={index} className={classes.tableRow}>
+                    <Grow
+                      in={row.checked}
+                      style={{ transformOrigin: "0 0 0" }}
+                      {...(row.checked ? { timeout: 1000 } : {})}
+                    >
+                      <TableCell
+                        component="th"
+                        scope="row"
+                        className={classes.labelContainer}
+                      >
+                        <div className={classes.imageUpload}>
+                          {imageLoad(row, "rows")}
+                        </div>
+                        <InputBase
+                          className={classes.inputBase}
+                          value={row.text}
+                          onChange={this.handleChangeLabel(row.id, "rows")}
+                        />
+                      </TableCell>
+                    </Grow>
+                    {this.state.columns.map(col => (
+                      <Grow
+                        key={col.id}
+                        in={row.checked}
+                        style={{ transformOrigin: "0 0 0" }}
+                        {...(row.checked ? { timeout: 1000 } : {})}
+                      >
+                        <TableCell className={classes.tableCell}>
+                          <input
+                            id={col.id}
+                            type="radio"
+                            name={row.id}
+                            value={col.text}
+                            onChange={e => this.handleRadioClick(row, e)}
+                          />
+                        </TableCell>
+                      </Grow>
+                    ))}
+                  </TableRow>
+                ))}
+                <TableRow>
+                  <TableCell>
+                    <Fab
+                      aria-label="Add"
+                      color="default"
+                      size="small"
+                      className={classes.fab}
+                      onClick={e =>
+                        this.addNewRowCol(this.state.rows.length, "rows", e)
+                      }
+                    >
+                      <AddIcon />
+                    </Fab>
+                    <Fab
+                      aria-label="Add"
+                      color="secondary"
+                      size="small"
+                      className={classes.remove}
+                      onClick={e => this.removeRowCol("rows", e)}
+                    >
+                      <RemoveIcon />
+                    </Fab>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </Paper>
+          <Button
+            type="submit"
+            className={classes.button}
+            onClick={this.handleStateData}
+          >
+            Save
+          </Button>
+        </form>
         <Button
           type="submit"
           className={classes.newButton}
@@ -406,7 +413,7 @@ class Question extends React.Component {
         >
           New Question
         </Button>
-      </form>
+      </div>
     );
   }
 }
