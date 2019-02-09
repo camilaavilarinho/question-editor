@@ -1,68 +1,71 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Question Editor
 
-## Available Scripts
+This project is a Question Editor for a Radio Button Matrix
 
-In the project directory, you can run:
+## Features
+- [X] Ability to select images from the hard drive for every row and column.
+- [X] Ability to set labels for every row and column.
+- [X] Ability to add new rows and columns.
+- [X] Ability to remove rows and columns.
+- [X] A backend to store the data
+- [X] A statistics pane on the right:
+    - [X] Amount of rows created
+    - [X] Amount of columns created
+    - [X] Amount of images uploaded
+    - [X] The string length of the longest row label
+    - [X] The string length of the longest column label
+- [X] Animations when adding a row or column
 
-### `npm start`
+## How to run
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Frontend
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+1. **Clone Repository**
 
-### `npm test`
+    `git clone https://github.com/camilaavilarinho/question-editor.git`
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+    `cd question-editor`
 
-### `npm run build`
+2. **Install Dependencies**
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+      `npm install`
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+3. **Run**
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+    `npm start`
 
-### `npm run eject`
+## Backend
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+1. Database
+Before run the backend is necessary to have mongoDB installed. If you don't have, check the installation guide [here](https://docs.mongodb.com/manual/administration/install-community/)
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+    start up MongoDB by executing the following command:
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+    `mongod`
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+    Create the MongoDB database instance by executing this commands in a different terminal tab:
 
-## Learn More
+    1. open mongodb client:
+       `mongo`
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+    2. create a new database:
+        `use questions`
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+2. Back to question-editor
 
-### Code Splitting
+   `cd question-editor`
+   `cd server`
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+3. **Install Dependencies**
 
-### Analyzing the Bundle Size
+     `npm install`
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+3. **Run**
+If you don't have nodemon installed globally execute the folllowing command:
 
-### Making a Progressive Web App
+    `npm install -g nodemon`
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+Then run the server:
 
-### Advanced Configuration
+     `nodemon server`
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
