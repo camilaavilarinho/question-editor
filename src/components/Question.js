@@ -12,6 +12,8 @@ import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
 import Button from "@material-ui/core/Button";
+import Collapse from "@material-ui/core/Collapse";
+import Grow from "@material-ui/core/Grow";
 import axios from "axios";
 
 const styles = theme => ({
@@ -46,7 +48,7 @@ const styles = theme => ({
   inputBase: {
     textAlign: "right",
     fontStyle: "italic",
-    minWidth: 50
+    width: 50
   },
   buttons: {
     width: 300,
@@ -101,16 +103,16 @@ const styles = theme => ({
 const prevState = {
   title: "Title of the Question",
   rows: [
-    { id: 1, text: "row1", image: "", radioOption: "" },
-    { id: 2, text: "row2", image: "", radioOption: "" },
-    { id: 3, text: "row3", image: "", radioOption: "" },
-    { id: 4, text: "row4", image: "", radioOption: "" }
+    { id: 1, text: "row1", image: "", radioOption: "", checked: true },
+    { id: 2, text: "row2", image: "", radioOption: "", checked: true },
+    { id: 3, text: "row3", image: "", radioOption: "", checked: true },
+    { id: 4, text: "row4", image: "", radioOption: "", checked: true }
   ],
   columns: [
-    { id: 1, text: "col1", image: "" },
-    { id: 2, text: "col2", image: "" },
-    { id: 3, text: "col3", image: "" },
-    { id: 4, text: "col4", image: "" }
+    { id: 1, text: "col1", image: "", checked: true },
+    { id: 2, text: "col2", image: "", checked: true },
+    { id: 3, text: "col3", image: "", checked: true },
+    { id: 4, text: "col4", image: "", checked: true }
   ]
 };
 
@@ -143,13 +145,15 @@ class Question extends React.Component {
         id: newId,
         text: `row${newId}`,
         image: "",
-        radioOption: ""
+        radioOption: "",
+        checked: true
       };
     } else {
       newRowCol = {
         id: newId,
         text: `col${newId}`,
-        image: ""
+        image: "",
+        checked: true
       };
     }
     let newState = [...this.state[name]];
@@ -166,15 +170,7 @@ class Question extends React.Component {
       [name]: newState
     });
   };
-  /* removeCol = e => {
-    e.preventDefault();
-    let newState = [...this.state.columns];
-    newState.pop();
-    this.setState({
-      columns: newState
-    });
-  }; */
-  /* Handle Click Radio Butoon */
+
   handleRadioClick = (clickedRow, e) => {
     let newState = [...this.state.rows];
     newState[clickedRow.id - 1].radioOption = e.target.value;
@@ -229,6 +225,7 @@ class Question extends React.Component {
 
   render() {
     const { classes } = this.props;
+    console.log("state: ", this.state);
 
     const imageLoad = (obj, name) => {
       if (obj.image !== "") {
@@ -265,21 +262,25 @@ class Question extends React.Component {
                 <TableCell align="right" className={classes.tableCell}>
                   {" "}
                 </TableCell>
+                {/* conditional to render with animation */}
                 {this.state.columns.map(col => (
-                  <TableCell
+                  <Grow
                     key={col.id}
-                    align="right"
-                    className={classes.tableCell}
+                    in={col.checked}
+                    style={{ transformOrigin: "0 0 0" }}
+                    {...(col.checked ? { timeout: 1000 } : {})}
                   >
-                    <div className={classes.imageUploadCol}>
-                      {imageLoad(col, "columns")}
-                    </div>
-                    <InputBase
-                      className={classes.inputBase}
-                      value={col.text}
-                      onChange={this.handleChangeLabel(col.id, "columns")}
-                    />
-                  </TableCell>
+                    <TableCell align="right" className={classes.tableCell}>
+                      <div className={classes.imageUploadCol}>
+                        {imageLoad(col, "columns")}
+                      </div>
+                      <InputBase
+                        className={classes.inputBase}
+                        value={col.text}
+                        onChange={this.handleChangeLabel(col.id, "columns")}
+                      />
+                    </TableCell>
+                  </Grow>
                 ))}
                 <TableCell className={classes.buttons}>
                   <Fab
@@ -308,30 +309,43 @@ class Question extends React.Component {
             <TableBody>
               {this.state.rows.map((row, index) => (
                 <TableRow key={index} className={classes.tableRow}>
-                  <TableCell
-                    component="th"
-                    scope="row"
-                    className={classes.labelContainer}
+                  <Grow
+                    in={row.checked}
+                    style={{ transformOrigin: "0 0 0" }}
+                    {...(row.checked ? { timeout: 1000 } : {})}
                   >
-                    <div className={classes.imageUpload}>
-                      {imageLoad(row, "rows")}
-                    </div>
-                    <InputBase
-                      className={classes.inputBase}
-                      value={row.text}
-                      onChange={this.handleChangeLabel(row.id, "rows")}
-                    />
-                  </TableCell>
-                  {this.state.columns.map(col => (
-                    <TableCell key={col.id} className={classes.tableCell}>
-                      <input
-                        id={col.id}
-                        type="radio"
-                        name={row.id}
-                        value={col.text}
-                        onChange={e => this.handleRadioClick(row, e)}
+                    <TableCell
+                      component="th"
+                      scope="row"
+                      className={classes.labelContainer}
+                    >
+                      <div className={classes.imageUpload}>
+                        {imageLoad(row, "rows")}
+                      </div>
+                      <InputBase
+                        className={classes.inputBase}
+                        value={row.text}
+                        onChange={this.handleChangeLabel(row.id, "rows")}
                       />
                     </TableCell>
+                  </Grow>
+                  {this.state.columns.map(col => (
+                    <Grow
+                      key={col.id}
+                      in={row.checked}
+                      style={{ transformOrigin: "0 0 0" }}
+                      {...(row.checked ? { timeout: 1000 } : {})}
+                    >
+                      <TableCell className={classes.tableCell}>
+                        <input
+                          id={col.id}
+                          type="radio"
+                          name={row.id}
+                          value={col.text}
+                          onChange={e => this.handleRadioClick(row, e)}
+                        />
+                      </TableCell>
+                    </Grow>
                   ))}
                 </TableRow>
               ))}
