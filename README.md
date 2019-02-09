@@ -1,6 +1,6 @@
 # Question Editor
 
-This project is a Question Editor for a Radio Button Matrix
+Question Editor for a Radio Button Matrix
 
 ## Features
 - [X] Ability to select images from the hard drive for every row and column.
@@ -39,7 +39,7 @@ This project is a Question Editor for a Radio Button Matrix
 1. Database
 Before run the backend is necessary to have mongoDB installed. If you don't have, check the installation guide [here](https://docs.mongodb.com/manual/administration/install-community/)
 
-    start up MongoDB by executing the following command:
+    Start up MongoDB by executing the following command:
 
     `mongod`
 
