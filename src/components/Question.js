@@ -12,7 +12,6 @@ import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
 import Button from "@material-ui/core/Button";
-import Collapse from "@material-ui/core/Collapse";
 import Grow from "@material-ui/core/Grow";
 import axios from "axios";
 
@@ -22,6 +21,11 @@ const styles = theme => ({
     margin: theme.spacing.unit * 3,
     overflowX: "auto",
     maxWidth: 700
+  },
+  headerInput:{
+    width: 150,
+    textAlign: "right",
+    fontStyle: "italic",
   },
   container: {
     display: "flex",
@@ -72,7 +76,11 @@ const styles = theme => ({
   },
   button: {
     color: "#fff",
-    backgroundColor: "#1dd1a1"
+    backgroundColor: "#1dd1a1",
+    margin: 10
+  },
+  newButton: {
+    backgroundColor: "#dfe6e9"
   },
   fileInput: {
     display: "none"
@@ -100,24 +108,22 @@ const styles = theme => ({
   }
 });
 
-const prevState = {
-  title: "Title of the Question",
-  rows: [
-    { id: 1, text: "row1", image: "", radioOption: "", checked: true },
-    { id: 2, text: "row2", image: "", radioOption: "", checked: true },
-    { id: 3, text: "row3", image: "", radioOption: "", checked: true },
-    { id: 4, text: "row4", image: "", radioOption: "", checked: true }
-  ],
-  columns: [
-    { id: 1, text: "col1", image: "", checked: true },
-    { id: 2, text: "col2", image: "", checked: true },
-    { id: 3, text: "col3", image: "", checked: true },
-    { id: 4, text: "col4", image: "", checked: true }
-  ]
-};
-
 class Question extends React.Component {
-  state = prevState;
+  state = {
+    title: "Title of the Question",
+    rows: [
+      { id: 1, text: "row1", image: "", radioOption: "", checked: true },
+      { id: 2, text: "row2", image: "", radioOption: "", checked: true },
+      { id: 3, text: "row3", image: "", radioOption: "", checked: true },
+      { id: 4, text: "row4", image: "", radioOption: "", checked: true }
+    ],
+    columns: [
+      { id: 1, text: "col1", image: "", checked: true },
+      { id: 2, text: "col2", image: "", checked: true },
+      { id: 3, text: "col3", image: "", checked: true },
+      { id: 4, text: "col4", image: "", checked: true }
+    ]
+  };
 
   componentDidMount() {
     this.handleStateData();
@@ -197,11 +203,23 @@ class Question extends React.Component {
     axios
       .post("http://localhost:4000/questions/save", newQuestion)
       .then(res => console.log(res.data));
+  };
 
+  handleResetData = () => {
     this.setState({
-      title: prevState.title,
-      rows: prevState.rows,
-      columns: prevState.columns
+        title: "Title of the Question",
+        rows: [
+          { id: 1, text: "row1", image: "", radioOption: "", checked: true },
+          { id: 2, text: "row2", image: "", radioOption: "", checked: true },
+          { id: 3, text: "row3", image: "", radioOption: "", checked: true },
+          { id: 4, text: "row4", image: "", radioOption: "", checked: true }
+        ],
+        columns: [
+          { id: 1, text: "col1", image: "", checked: true },
+          { id: 2, text: "col2", image: "", checked: true },
+          { id: 3, text: "col3", image: "", checked: true },
+          { id: 4, text: "col4", image: "", checked: true }
+        ]
     });
   };
 
@@ -225,7 +243,6 @@ class Question extends React.Component {
 
   render() {
     const { classes } = this.props;
-    console.log("state: ", this.state);
 
     const imageLoad = (obj, name) => {
       if (obj.image !== "") {
@@ -250,7 +267,7 @@ class Question extends React.Component {
         <h2>Question Editor View</h2>
         <div className={classes.container} noValidate autoComplete="off">
           <InputBase
-            className={classes.inputBase}
+            className={classes.headerInput}
             value={this.state.title}
             onChange={this.handleChange("title")}
           />
@@ -262,7 +279,6 @@ class Question extends React.Component {
                 <TableCell align="right" className={classes.tableCell}>
                   {" "}
                 </TableCell>
-                {/* conditional to render with animation */}
                 {this.state.columns.map(col => (
                   <Grow
                     key={col.id}
@@ -382,6 +398,13 @@ class Question extends React.Component {
           onClick={this.handleStateData}
         >
           Save
+        </Button>
+        <Button
+          type="submit"
+          className={classes.newButton}
+          onClick={this.handleResetData}
+        >
+          New Question
         </Button>
       </form>
     );
