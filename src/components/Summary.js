@@ -21,10 +21,10 @@ class Summary extends React.Component {
   getLongestLabel = obj => {
     let max = 0;
     if (obj !== undefined) {
-      for(var val in obj){
-        let labelSize = obj[val].text.length;
+      obj.forEach(val => {
+        let labelSize = val.text.length;
         if (labelSize >= max) max = labelSize;
-      }
+      });
     }
     return max;
   };
@@ -32,12 +32,12 @@ class Summary extends React.Component {
   getNumberOfImages = (rows, columns) => {
     let count = 0;
     if (rows !== undefined) {
-      for (var rKey in rows) {
-        if (rows[rKey].image !== "") count++;
-      }
-      for (var cKey in columns) {
-        if (columns[cKey].image !== "") count++;
-      }
+      rows.forEach(rKey => {
+        if(rKey.image !== "") count ++
+      })
+      columns.forEach(cKey => {
+        if(cKey.image !== "") count ++
+      })
     }
     return count;
   };
@@ -59,7 +59,13 @@ class Summary extends React.Component {
           <p>
             Number of columns: {columns !== undefined ? columns.length : null}{" "}
           </p>{" "}
-          <p> Number of images uploaded: {this.getNumberOfImages(rows, columns)} </p>{" "}
+          <p>
+            {" "}
+            Number of images uploaded: {this.getNumberOfImages(
+              rows,
+              columns
+            )}{" "}
+          </p>{" "}
           <p> Longest row label: {this.getLongestLabel(rows)} </p>{" "}
           <p> Longest column label: {this.getLongestLabel(columns)} </p>{" "}
         </Paper>{" "}
